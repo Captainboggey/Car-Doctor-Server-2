@@ -27,6 +27,7 @@ async function run() {
   try {
 
    const serviceCollection = client.db("carDoctor2") .collection("services")
+   const bookingCollection = client.db("carDoctor2") .collection("bookings")
 
 
    app.get("/services", async(req,res)=>{
@@ -47,6 +48,26 @@ async function run() {
        const result = await serviceCollection.findOne(query,options)
        res.send(result)
    })
+
+  //  bookings
+
+  app.post("/bookings",async(req,res)=>{
+    const bookings = req.body;
+    const result = await bookingCollection.insertOne(bookings)
+    res.send(result);
+  })
+
+  app.get("/bookings",async(req,res)=>{
+   let query = {}
+   
+   if(req.query?.email){
+        query = {email: req.query.email}
+   }
+    const cursor = bookingCollection.find(query)
+    const result = await cursor.toArray();
+    console.log(result)
+    res.send(result)
+  })
 
 
 
